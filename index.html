@@ -43,6 +43,11 @@
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
+        .badge-err {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
         h1 {
             font-size: 22px;
             font-weight: 800;
@@ -161,44 +166,90 @@
             font-size: 11px;
             color: #64748b;
         }
+
+        /* Error block when bypass detected */
+        .error-block {
+            display: none;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 20px 16px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .error-block h3 {
+            color: #ef4444;
+            font-size: 15px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .error-block p {
+            color: #cbd5e1;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+        .error-block ol {
+            color: #94a3b8;
+            font-size: 12px;
+            padding-left: 20px;
+            line-height: 1.6;
+        }
     </style>
 </head>
 <body>
     <div class="card">
-        <div class="badge">Xác Thực Thành Công</div>
-        <h1>LEO HUB - PAPER TO PLANE</h1>
-        <p class="desc">Bạn đã hoàn thành vượt link! Dưới đây là mã Key kích hoạt 24h dành riêng cho tài khoản Roblox của bạn.</p>
+        <!-- Main Valid Block -->
+        <div id="validBlock">
+            <div class="badge">Xác Thực Thành Công</div>
+            <h1>LEO HUB - PAPER TO PLANE</h1>
+            <p class="desc">Bạn đã hoàn thành vượt link hợp lệ! Dưới đây là mã Key kích hoạt 24h dành riêng cho tài khoản Roblox của bạn.</p>
 
-        <div class="user-info">
-            <span>Tài khoản Roblox:</span>
-            <span id="playerName">Đang tải...</span>
+            <div class="user-info">
+                <span>Tài khoản Roblox:</span>
+                <span id="playerName">Đang tải...</span>
+            </div>
+
+            <div class="key-box">
+                <div class="key-label">MÃ KEY ĐỘC QUYỀN (HẠN 24H)</div>
+                <div class="key-code" id="keyCode">Đang tạo key...</div>
+            </div>
+
+            <button class="btn-copy" id="copyBtn" onclick="copyKey()">SAO CHÉP MÃ KEY</button>
+
+            <div class="guide-box">
+                <div class="guide-title">Cách kích hoạt trong game:</div>
+                <div class="step">
+                    <span class="step-num">1</span>
+                    <span>Bấm nút <b>Sao Chép Mã Key</b> ở trên.</span>
+                </div>
+                <div class="step">
+                    <span class="step-num">2</span>
+                    <span>Quay lại game <b>Roblox</b>, dán mã Key vào ô nhập.</span>
+                </div>
+                <div class="step">
+                    <span class="step-num">3</span>
+                    <span>Bấm nút <b>Kích Hoạt</b> để mở toàn bộ tính năng!</span>
+                </div>
+            </div>
+
+            <div class="footer-note">
+                Lưu ý: Key này được khóa theo ID tài khoản của bạn, người khác sẽ không dùng được.
+            </div>
         </div>
 
-        <div class="key-box">
-            <div class="key-label">MÃ KEY ĐỘC QUYỀN (HẠN 24H)</div>
-            <div class="key-code" id="keyCode">Đang tạo key...</div>
-        </div>
-
-        <button class="btn-copy" id="copyBtn" onclick="copyKey()">SAO CHÉP MÃ KEY</button>
-
-        <div class="guide-box">
-            <div class="guide-title">Cách kích hoạt trong game:</div>
-            <div class="step">
-                <span class="step-num">1</span>
-                <span>Bấm nút <b>Sao Chép Mã Key</b> ở trên.</span>
-            </div>
-            <div class="step">
-                <span class="step-num">2</span>
-                <span>Quay lại game <b>Roblox</b>, dán mã Key vào ô nhập.</span>
-            </div>
-            <div class="step">
-                <span class="step-num">3</span>
-                <span>Bấm nút <b>Kích Hoạt</b> để mở toàn bộ tính năng!</span>
-            </div>
-        </div>
-
-        <div class="footer-note">
-            Lưu ý: Key này được khóa theo ID tài khoản của bạn, người khác sẽ không dùng được.
+        <!-- Invalid / Direct Access Block -->
+        <div id="invalidBlock" class="error-block">
+            <div class="badge badge-err" style="margin-bottom: 10px;">Truy Cập Bị Chặn</div>
+            <h3>Khóa Bảo Mật: Phiên Không Hợp Lệ</h3>
+            <p>Trang này <b>không cho phép truy cập trực tiếp</b> hoặc lưu Bookmark để dùng lại sau 24h.</p>
+            <ol>
+                <li>Vui lòng mở game <b>Roblox</b> và chạy script.</li>
+                <li>Bấm nút <b>"Sao chép lại Link"</b> trong bảng Key.</li>
+                <li>Vượt link rút gọn để được cấp phiên lấy Key mới trong ngày.</li>
+            </ol>
         </div>
     </div>
 
@@ -222,7 +273,6 @@
             return "LEO_" + h1 + h2;
         }
 
-        // Lấy ngày hiện tại theo giờ Việt Nam (GMT+7)
         function getVietnamDayStamp() {
             const now = new Date();
             const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
@@ -235,30 +285,46 @@
 
         // Đọc tham số URL
         const params = new URLSearchParams(window.location.search);
-        const urlKey = params.get("k");
-        const urlUid = params.get("uid") || "0";
+        const urlUid = params.get("uid");
         const urlName = params.get("name") || ("ID: " + urlUid);
+        const urlTime = parseInt(params.get("t") || "0", 10);
+        const urlSig = params.get("sig");
 
-        document.getElementById("playerName").textContent = decodeURIComponent(urlName);
+        const nowUnix = Math.floor(Date.now() / 1000);
+        const sessionAge = nowUnix - urlTime;
 
-        let finalKey = "";
-        if (urlKey && urlKey.startsWith("LEO_")) {
-            finalKey = urlKey;
-        } else {
-            const dayStamp = getVietnamDayStamp();
-            finalKey = generateLeoKey(urlUid, dayStamp);
+        // Xác thực chữ ký phiên: phải có uid hợp lệ (>0), chữ ký signature khớp, và phiên tạo trong vòng 45 phút
+        let isValidSession = false;
+        if (urlUid && parseInt(urlUid, 10) > 0 && urlSig && urlTime > 0) {
+            const expectedSig = (fnv1a("SIG_" + urlUid + "_" + urlTime + "_" + SALT) >>> 0).toString(16).toUpperCase().padStart(8, "0");
+            if (urlSig === expectedSig && sessionAge >= -120 && sessionAge <= 2700) {
+                isValidSession = true;
+            }
         }
 
-        document.getElementById("keyCode").textContent = finalKey;
+        let finalKey = "";
+        if (isValidSession) {
+            const dayStamp = getVietnamDayStamp();
+            finalKey = generateLeoKey(urlUid, dayStamp);
 
-        // Tự động copy khi vừa vào trang
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(finalKey).catch(() => {});
+            document.getElementById("validBlock").style.display = "block";
+            document.getElementById("invalidBlock").style.display = "none";
+            document.getElementById("playerName").textContent = decodeURIComponent(urlName);
+            document.getElementById("keyCode").textContent = finalKey;
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(finalKey).catch(() => {});
+            }
+        } else {
+            // Chặn truy cập trực tiếp hoặc lưu Bookmark từ hôm trước!
+            document.getElementById("validBlock").style.display = "none";
+            document.getElementById("invalidBlock").style.display = "block";
         }
 
         function copyKey() {
             const btn = document.getElementById("copyBtn");
             const textToCopy = finalKey;
+            if (!textToCopy) return;
 
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(textToCopy).then(() => {
