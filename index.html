@@ -254,111 +254,154 @@
     </div>
 
     <script>
-        const SALT = "LEO_PTP_VIP_SALT_2026";
+var _0xstr = ["PzY8LCMnIywlOiMsIDI/JyxBQ0FF","ODYqQiw=","LA==","ODYqQSw=","Qw==","PzY8LA==","BhoX","HRIeFg==","OjdJUw==","Bw==","ABoU","IDo0LA==","","BRIfGhcxHxwQGA==","Gh0FEh8aFzEfHBAY","Ax8SChYBPRIeFg==","GBYKMBwXFg==","EBwDCjEHHQ==","ER8cEBg=","HRwdFg==","BxYLBxIBFhI=","FRoLFhc=","XkpKSkoDCw==","EBwDCg==","PpBTOBYKSVM=","Y7BTIDI8UzA7uiNTODYqUg==","EBwDGhYX","IDI8UzA7uiNTPrBTODYq"];
+var _0xkey = 115;
+function _0xdec(_0xidx) {
+    var _0xb64 = atob(_0xstr[_0xidx]);
+    var _0xres = "";
+    for (var _0xi = 0; _0xi < _0xb64.length; _0xi++) {
+        _0xres += String.fromCharCode(_0xb64.charCodeAt(_0xi) ^ _0xkey);
+    }
+    return _0xres;
+}
 
-        function fnv1a(str) {
-            let hash = 0x811C9DC5;
-            for (let i = 0; i < str.length; i++) {
-                hash ^= str.charCodeAt(i);
-                hash = Math.imul(hash, 0x01000193) >>> 0;
-            }
-            return hash;
+(function() {
+    // 1. Anti-Inspection & DevTools Block
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        return false;
+    });
+
+    document.addEventListener('keydown', function(e) {
+        // F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U, Ctrl+S
+        if (e.keyCode === 123 ||
+            (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) ||
+            (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83))) {
+            e.preventDefault();
+            return false;
         }
+    });
 
-        function generateLeoKey(userId, dayStamp) {
-            const s1 = "KEY1_" + userId + "_" + dayStamp + "_" + SALT;
-            const s2 = "KEY2_" + userId + "_" + dayStamp + "_" + SALT;
-            const h1 = fnv1a(s1).toString(16).toUpperCase().padStart(8, "0");
-            const h2 = (fnv1a(s2) & 0xFFFF).toString(16).toUpperCase().padStart(4, "0");
-            return "LEO_" + h1 + h2;
+    try {
+        setInterval(function() {
+            try { console.clear(); } catch(err) {}
+        }, 1500);
+    } catch(e) {}
+
+    // 2. Secret and Algorithms
+    const SECRET_SALT = _0xdec(0);
+
+    function fnv1a(str) {
+        let hash = 0x811C9DC5;
+        for (let i = 0; i < str.length; i++) {
+            hash ^= str.charCodeAt(i);
+            hash = Math.imul(hash, 0x01000193) >>> 0;
         }
+        return hash;
+    }
 
-        function getVietnamDayStamp() {
-            const now = new Date();
-            const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
-            const vnTime = new Date(utcTime + (7 * 3600000));
-            const y = vnTime.getFullYear();
-            const m = String(vnTime.getMonth() + 1).padStart(2, "0");
-            const d = String(vnTime.getDate()).padStart(2, "0");
-            return `${y}${m}${d}`;
+    function generateLeoKey(userId, dayStamp) {
+        const s1 = _0xdec(1) + userId + _0xdec(2) + dayStamp + _0xdec(2) + SECRET_SALT;
+        const s2 = _0xdec(3) + userId + _0xdec(2) + dayStamp + _0xdec(2) + SECRET_SALT;
+        const h1 = fnv1a(s1).toString(16).toUpperCase().padStart(8, _0xdec(4));
+        const h2 = (fnv1a(s2) & 0xFFFF).toString(16).toUpperCase().padStart(4, _0xdec(4));
+        return _0xdec(5) + h1 + h2;
+    }
+
+    function getVietnamDayStamp() {
+        const now = new Date();
+        const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
+        const vnTime = new Date(utcTime + (7 * 3600000));
+        const y = vnTime.getFullYear();
+        const m = String(vnTime.getMonth() + 1).padStart(2, _0xdec(4));
+        const d = String(vnTime.getDate()).padStart(2, _0xdec(4));
+        return y + m + d;
+    }
+
+    // 3. Session Validation
+    const params = new URLSearchParams(window.location.search);
+    const urlUid = params.get(_0xdec(6));
+    const urlName = params.get(_0xdec(7)) || (_0xdec(8) + (urlUid || _0xdec(4)));
+    const urlTime = parseInt(params.get(_0xdec(9)) || _0xdec(4), 10);
+    const urlSig = params.get(_0xdec(10));
+
+    const nowUnix = Math.floor(Date.now() / 1000);
+    const sessionAge = nowUnix - urlTime;
+
+    let isValidSession = false;
+    if (urlUid && parseInt(urlUid, 10) > 0 && urlSig && urlTime > 0) {
+        const expectedSig = (fnv1a(_0xdec(11) + urlUid + _0xdec(2) + urlTime + _0xdec(2) + SECRET_SALT) >>> 0).toString(16).toUpperCase().padStart(8, _0xdec(4));
+        if (urlSig === expectedSig && sessionAge >= -120 && sessionAge <= 2700) {
+            isValidSession = true;
         }
+    }
 
-        // Đọc tham số URL
-        const params = new URLSearchParams(window.location.search);
-        const urlUid = params.get("uid");
-        const urlName = params.get("name") || ("ID: " + urlUid);
-        const urlTime = parseInt(params.get("t") || "0", 10);
-        const urlSig = params.get("sig");
+    let finalGeneratedKey = _0xdec(12);
 
-        const nowUnix = Math.floor(Date.now() / 1000);
-        const sessionAge = nowUnix - urlTime;
+    const validEl = document.getElementById(_0xdec(13));
+    const invalidEl = document.getElementById(_0xdec(14));
+    const playerEl = document.getElementById(_0xdec(15));
+    const keyEl = document.getElementById(_0xdec(16));
+    const copyBtn = document.getElementById(_0xdec(17));
 
-        // Xác thực chữ ký phiên: phải có uid hợp lệ (>0), chữ ký signature khớp, và phiên tạo trong vòng 45 phút
-        let isValidSession = false;
-        if (urlUid && parseInt(urlUid, 10) > 0 && urlSig && urlTime > 0) {
-            const expectedSig = (fnv1a("SIG_" + urlUid + "_" + urlTime + "_" + SALT) >>> 0).toString(16).toUpperCase().padStart(8, "0");
-            if (urlSig === expectedSig && sessionAge >= -120 && sessionAge <= 2700) {
-                isValidSession = true;
-            }
+    if (isValidSession) {
+        const dayStamp = getVietnamDayStamp();
+        finalGeneratedKey = generateLeoKey(urlUid, dayStamp);
+
+        validEl.style.display = _0xdec(18);
+        invalidEl.style.display = _0xdec(19);
+        playerEl.textContent = decodeURIComponent(urlName);
+        keyEl.textContent = finalGeneratedKey;
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(finalGeneratedKey).catch(function() {});
         }
+    } else {
+        validEl.style.display = _0xdec(19);
+        invalidEl.style.display = _0xdec(18);
+    }
 
-        let finalKey = "";
-        if (isValidSession) {
-            const dayStamp = getVietnamDayStamp();
-            finalKey = generateLeoKey(urlUid, dayStamp);
-
-            document.getElementById("validBlock").style.display = "block";
-            document.getElementById("invalidBlock").style.display = "none";
-            document.getElementById("playerName").textContent = decodeURIComponent(urlName);
-            document.getElementById("keyCode").textContent = finalKey;
-
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(finalKey).catch(() => {});
-            }
+    // 4. Copy Handler
+    window.copyKey = function() {
+        if (!finalGeneratedKey) return;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(finalGeneratedKey).then(function() {
+                onCopiedSuccess();
+            }).catch(function() {
+                fallbackCopy(finalGeneratedKey);
+            });
         } else {
-            // Chặn truy cập trực tiếp hoặc lưu Bookmark từ hôm trước!
-            document.getElementById("validBlock").style.display = "none";
-            document.getElementById("invalidBlock").style.display = "block";
+            fallbackCopy(finalGeneratedKey);
         }
+    };
 
-        function copyKey() {
-            const btn = document.getElementById("copyBtn");
-            const textToCopy = finalKey;
-            if (!textToCopy) return;
-
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(textToCopy).then(() => {
-                    onCopied(btn);
-                }).catch(() => fallbackCopy(textToCopy, btn));
-            } else {
-                fallbackCopy(textToCopy, btn);
-            }
+    function fallbackCopy(text) {
+        const ta = document.createElement(_0xdec(20));
+        ta.value = text;
+        ta.style.position = _0xdec(21);
+        ta.style.top = _0xdec(22);
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+            document.execCommand(_0xdec(23));
+            onCopiedSuccess();
+        } catch(err) {
+            alert(_0xdec(24) + text);
         }
+        document.body.removeChild(ta);
+    }
 
-        function fallbackCopy(text, btn) {
-            const textArea = document.createElement("textarea");
-            textArea.value = text;
-            textArea.style.position = "fixed";
-            textArea.style.top = "-9999px";
-            document.body.appendChild(textArea);
-            textArea.select();
-            try {
-                document.execCommand("copy");
-                onCopied(btn);
-            } catch (err) {
-                alert("Mã Key của bạn là: " + text);
-            }
-            document.body.removeChild(textArea);
-        }
+    function onCopiedSuccess() {
+        if (!copyBtn) return;
+        copyBtn.textContent = _0xdec(25);
+        copyBtn.classList.add(_0xdec(26));
+        setTimeout(function() {
+            copyBtn.textContent = _0xdec(27);
+            copyBtn.classList.remove(_0xdec(26));
+        }, 3000);
+    }
+})();
 
-        function onCopied(btn) {
-            btn.textContent = "ĐÃ SAO CHÉP KEY!";
-            btn.classList.add("copied");
-            setTimeout(() => {
-                btn.textContent = "SAO CHÉP MÃ KEY";
-                btn.classList.remove("copied");
-            }, 3000);
-        }
-    </script>
+</script>
 </body>
 </html>
