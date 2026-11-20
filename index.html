@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEO HUB - Nhận Key Kích Hoạt 24h</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            background: #0f172a;
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 440px;
+            padding: 28px 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        h1 {
+            font-size: 22px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+        p.desc {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 22px;
+            line-height: 1.5;
+        }
+        .user-info {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+        .user-info span:first-child {
+            color: #64748b;
+        }
+        .user-info span:last-child {
+            color: #38bdf8;
+            font-weight: 600;
+            font-family: monospace;
+        }
+        .key-box {
+            background: #090d16;
+            border: 2px dashed #38bdf8;
+            border-radius: 12px;
+            padding: 16px 12px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .key-label {
+            font-size: 11px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+        .key-code {
+            font-size: 20px;
+            font-weight: 800;
+            color: #38bdf8;
+            letter-spacing: 0.08em;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            word-break: break-all;
+            user-select: all;
+        }
+        .btn-copy {
+            width: 100%;
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            padding: 14px 20px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(14, 165, 233, 0.35);
+        }
+        .btn-copy:active {
+            transform: scale(0.98);
+        }
+        .btn-copy.copied {
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+        }
+        .guide-box {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #334155;
+            text-align: left;
+        }
+        .guide-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #cbd5e1;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .step {
+            display: flex;
+            align-items: flex-start;
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .step-num {
+            background: #334155;
+            color: #f8fafc;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            margin-right: 8px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        .footer-note {
+            margin-top: 16px;
+            font-size: 11px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="badge">Xác Thực Thành Công</div>
+        <h1>LEO HUB - PAPER TO PLANE</h1>
+        <p class="desc">Bạn đã hoàn thành vượt link! Dưới đây là mã Key kích hoạt 24h dành riêng cho tài khoản Roblox của bạn.</p>
+
+        <div class="user-info">
+            <span>Tài khoản Roblox:</span>
+            <span id="playerName">Đang tải...</span>
+        </div>
+
+        <div class="key-box">
+            <div class="key-label">MÃ KEY ĐỘC QUYỀN (HẠN 24H)</div>
+            <div class="key-code" id="keyCode">Đang tạo key...</div>
+        </div>
+
+        <button class="btn-copy" id="copyBtn" onclick="copyKey()">SAO CHÉP MÃ KEY</button>
+
+        <div class="guide-box">
+            <div class="guide-title">Cách kích hoạt trong game:</div>
+            <div class="step">
+                <span class="step-num">1</span>
+                <span>Bấm nút <b>Sao Chép Mã Key</b> ở trên.</span>
+            </div>
+            <div class="step">
+                <span class="step-num">2</span>
+                <span>Quay lại game <b>Roblox</b>, dán mã Key vào ô nhập.</span>
+            </div>
+            <div class="step">
+                <span class="step-num">3</span>
+                <span>Bấm nút <b>Kích Hoạt</b> để mở toàn bộ tính năng!</span>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            Lưu ý: Key này được khóa theo ID tài khoản của bạn, người khác sẽ không dùng được.
+        </div>
+    </div>
+
+    <script>
+        const SALT = "LEO_PTP_VIP_SALT_2026";
+
+        function fnv1a(str) {
+            let hash = 0x811C9DC5;
+            for (let i = 0; i < str.length; i++) {
+                hash ^= str.charCodeAt(i);
+                hash = Math.imul(hash, 0x01000193) >>> 0;
+            }
+            return hash;
+        }
+
+        function generateLeoKey(userId, dayStamp) {
+            const s1 = "KEY1_" + userId + "_" + dayStamp + "_" + SALT;
+            const s2 = "KEY2_" + userId + "_" + dayStamp + "_" + SALT;
+            const h1 = fnv1a(s1).toString(16).toUpperCase().padStart(8, "0");
+            const h2 = (fnv1a(s2) & 0xFFFF).toString(16).toUpperCase().padStart(4, "0");
+            return "LEO_" + h1 + h2;
+        }
+
+        // Lấy ngày hiện tại theo giờ Việt Nam (GMT+7)
+        function getVietnamDayStamp() {
+            const now = new Date();
+            const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
+            const vnTime = new Date(utcTime + (7 * 3600000));
+            const y = vnTime.getFullYear();
+            const m = String(vnTime.getMonth() + 1).padStart(2, "0");
+            const d = String(vnTime.getDate()).padStart(2, "0");
+            return `${y}${m}${d}`;
+        }
+
+        // Đọc tham số URL
+        const params = new URLSearchParams(window.location.search);
+        const urlKey = params.get("k");
+        const urlUid = params.get("uid") || "0";
+        const urlName = params.get("name") || ("ID: " + urlUid);
+
+        document.getElementById("playerName").textContent = decodeURIComponent(urlName);
+
+        let finalKey = "";
+        if (urlKey && urlKey.startsWith("LEO_")) {
+            finalKey = urlKey;
+        } else {
+            const dayStamp = getVietnamDayStamp();
+            finalKey = generateLeoKey(urlUid, dayStamp);
+        }
+
+        document.getElementById("keyCode").textContent = finalKey;
+
+        // Tự động copy khi vừa vào trang
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(finalKey).catch(() => {});
+        }
+
+        function copyKey() {
+            const btn = document.getElementById("copyBtn");
+            const textToCopy = finalKey;
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    onCopied(btn);
+                }).catch(() => fallbackCopy(textToCopy, btn));
+            } else {
+                fallbackCopy(textToCopy, btn);
+            }
+        }
+
+        function fallbackCopy(text, btn) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.top = "-9999px";
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand("copy");
+                onCopied(btn);
+            } catch (err) {
+                alert("Mã Key của bạn là: " + text);
+            }
+            document.body.removeChild(textArea);
+        }
+
+        function onCopied(btn) {
+            btn.textContent = "ĐÃ SAO CHÉP KEY!";
+            btn.classList.add("copied");
+            setTimeout(() => {
+                btn.textContent = "SAO CHÉP MÃ KEY";
+                btn.classList.remove("copied");
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
